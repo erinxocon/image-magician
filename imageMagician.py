@@ -51,7 +51,7 @@ def renderImage():
 
             i = i.transpose(action)
 
-    if rotate and transpose is None:
+    if rotate:
         i = i.rotate(int(rotate))
 
     if blur:
@@ -70,7 +70,7 @@ def images_route():
     return renderImage()
 
 
-@app.route('/args/', methods=['GET'])
+@app.route('images/args/', methods=['GET'])
 def get_args():
 
     url = request.args.get('url', '')
