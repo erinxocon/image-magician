@@ -9,9 +9,9 @@ Image Magician is a utility for content manager that allows for easy image manip
 ## Usage:
 
 
--[`images?url=value`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg) url of image
+-[`/images?url=value`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg) url of image
 
--[`images?crop=upperLeftX,upperLeftY,LowerRightX,LowerRightY`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg?crop=100,100,200,200) crops image
+-[`/images?crop=upperLeftX,upperLeftY,LowerRightX,LowerRightY`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg?crop=100,100,200,200) crops image
 
 -[`/images?size=width,height`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg?size=400,400) resizes image
 
