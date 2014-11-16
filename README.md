@@ -19,7 +19,7 @@ Image Magician is a utility for content manager that allows for easy image manip
 
 -[`/images?rotate=angle`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&rotate=45) rotates the image
 
--[`/images?blur=radius`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&blur=4)
+-[`/images?blur=radius`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&blur=4) Guaisian Blur
 
 -[`/images/args`](http://imagemagician.mikexweb.com/images/args/?url=http://i.imgur.com/1GuBy9L.jpg) returns get parameters
 
