@@ -82,5 +82,5 @@ def get_args():
     return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate, 'transpose': transpose, 'blur': blur})
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=5280)
+    app.debug = False
+    app.run(host='0.0.0.0', port=8000)
