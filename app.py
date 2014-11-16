@@ -70,7 +70,7 @@ def images_route():
     return renderImage()
 
 
-@app.route('images/args/', methods=['GET'])
+@app.route('/images/args/', methods=['GET'])
 def get_args():
 
     url = request.args.get('url', '')
