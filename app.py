@@ -11,6 +11,11 @@ app = Flask(__name__)
 
 
 def renderImage():
+    """
+    This function looks at the url arguments from the request object and uses
+    them as paramters to PIL.  It also creates the response object and sets
+    the the correct http headers for the response.
+    """
     url = request.args.get('url', '')
     size = request.args.get('size', '')
     crop = request.args.get('crop', '')
@@ -86,12 +91,16 @@ def renderImage():
 
 @app.route('/images/', methods=['GET'])
 def images_route():
-
+    """retutns the modified image"""
     return renderImage()
 
 
 @app.route('/images/args/', methods=['GET'])
 def get_args():
+    """
+    This function generates a json object containig information about the url
+    paramters.
+    """
     url = request.args.get('url', '')
     size = request.args.get('size', '')
     crop = request.args.get('crop', '')
