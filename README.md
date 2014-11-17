@@ -30,15 +30,15 @@ Image Magician is a utility for content manager that allows for easy image manip
 
 http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&crop=100,100,200,200&size=200,200
 
-```This crops the image from http://i.imgur.com/1GuBy9L.jpg using the bounding box 100,100,200,200 and then resizes the cropped portion to 200x200 pixels```
+This crops the image from http://i.imgur.com/1GuBy9L.jpg using the bounding box 100,100,200,200 and then resizes the cropped portion to 200x200 pixels
 
 http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&blur=4&rotate=45
 
-```This will rotate the image from http://i.imgur.com/1GuBy9L.jpg and then do a guasian blur using a radius of 4.```
+This will rotate the image from http://i.imgur.com/1GuBy9L.jpg and then do a guasian blur using a radius of 4.
 
 http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&transpose=90,left_right
 
-```This will transpose the image from http://i.imgur.com/1GuBy9L.jpg and transpose it 90 degrees counter clockwise, and then flip it across the Y axis.```
+This will transpose the image from http://i.imgur.com/1GuBy9L.jpg and transpose it 90 degrees counter clockwise, and then flip it across the Y axis.
 
 ## Notes
 The order of operations is crop, resize, transpose, rotate, and then blur.  You can use any combination of paramters together to get your intended effect.  You can also daisy chain transpose actions one after another by making them a comma seperated list and passing it through the query string.  All angles are measured in degrees and positive is counter clockwise.
