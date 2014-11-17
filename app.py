@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-
-import requests
-import tempfile
-
+from __future__ import division
 from flask import Flask, request, make_response, jsonify
 from PIL import Image, ImageFilter
 from io import BytesIO
 
+import requests
+import tempfile
 
 app = Flask(__name__)
 
@@ -26,6 +25,7 @@ def renderImage():
     if crop:
         rectCrop = map(int, crop.split(','))
         i = i.crop(tuple(rectCrop))
+
     if scale:
         scaleVars = map(str, scale.split(','))
         orig_width = i.size[0]
@@ -36,15 +36,16 @@ def renderImage():
             scaleSize = tuple([new_width, new_height])
         elif scaleVars[0] == 'width':
             ratio = int(scaleVars[1])/orig_width
-            new_width = orig_width*ratio
-            new_height = orig_height*ratio
+            new_width = int(scaleVars[1])
+            new_height = int(orig_height*ratio)
             scaleSize = tuple([new_width, new_height])
         elif scaleVars[0] == 'height':
             ratio = int(scaleVars[1])/orig_height
-            new_width = orig_width*ratio
-            new_Height = orig_height*ratio
+            new_width = int(orig_width*ratio)
+            new_Height = int(scaleVars[1])
             scaleSize = tuple([new_width, new_Height])
-        #i = i.resize(scaleSize)
+        i = i.resize(scaleSize)
+
     if size:
         size = tuple(map(int, size.split(',')))
         i = i.resize(size)
@@ -79,7 +80,7 @@ def renderImage():
     i.close()
     resp = make_response(open(image_temp.name).read())
     resp.headers['Content-Type'] = 'image/png'
-    return str(1125/2250)
+    return resp
 
 
 @app.route('/images/', methods=['GET'])
@@ -97,7 +98,8 @@ def get_args():
     transpose = request.args.get('transpose', '')
     blur = request.args.get('blur', '')
     scale = request.args.get('scale', '')
-    return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate, 'transpose': transpose, 'blur': blur, 'scale': scale})
+    return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate,
+                   'transpose': transpose, 'blur': blur, 'scale': scale})
 
 if __name__ == '__main__':
     app.debug = True
