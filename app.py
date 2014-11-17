@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
-
-import requests
-import tempfile
-
+from __future__ import division
 from flask import Flask, request, make_response, jsonify
 from PIL import Image, ImageFilter
 from io import BytesIO
 
+import requests
+import tempfile
 
 app = Flask(__name__)
 
-app.secret_key = '\x89\x90\xf7eLqG\xda}\xdb}\t\xdbZ\xa8\x90b\x12\rT\xa0J\xa2 '
-
 
 def renderImage():
+    """
+    This function looks at the url arguments from the request object and uses
+    them as paramters to PIL.  It also creates the response object and sets
+    the the correct http headers for the response.
+    """
     url = request.args.get('url', '')
     size = request.args.get('size', '')
     crop = request.args.get('crop', '')
     rotate = request.args.get('rotate', '')
     transpose = request.args.get('transpose', '')
     blur = request.args.get('blur', '')
+    scale = request.args.get('scale', '')
     r = requests.get(url)
     image_temp = tempfile.NamedTemporaryFile(mode='w+b')
     i = Image.open(BytesIO(r.content))
@@ -27,6 +30,27 @@ def renderImage():
     if crop:
         rectCrop = map(int, crop.split(','))
         i = i.crop(tuple(rectCrop))
+
+    if scale:
+        scaleVars = map(str, scale.split(','))
+        orig_width = i.size[0]
+        orig_height = i.size[1]
+        if scaleVars[0] == '%':
+            new_width = int(round(orig_width*float(scaleVars[1])))
+            new_height = int(round(orig_height*float(scaleVars[1])))
+            scaleSize = tuple([new_width, new_height])
+        elif scaleVars[0] == 'width':
+            ratio = int(scaleVars[1])/orig_width
+            new_width = int(scaleVars[1])
+            new_height = int(orig_height*ratio)
+            scaleSize = tuple([new_width, new_height])
+        elif scaleVars[0] == 'height':
+            ratio = int(scaleVars[1])/orig_height
+            new_width = int(orig_width*ratio)
+            new_Height = int(scaleVars[1])
+            scaleSize = tuple([new_width, new_Height])
+        i = i.resize(scaleSize)
+
     if size:
         size = tuple(map(int, size.split(',')))
         i = i.resize(size)
@@ -61,26 +85,32 @@ def renderImage():
     i.close()
     resp = make_response(open(image_temp.name).read())
     resp.headers['Content-Type'] = 'image/png'
+    resp.headers['Cache-Control'] = 'public, max-age=3600'
     return resp
 
 
 @app.route('/images/', methods=['GET'])
 def images_route():
-
+    """retutns the modified image"""
     return renderImage()
 
 
 @app.route('/images/args/', methods=['GET'])
 def get_args():
-
+    """
+    This function generates a json object containig information about the url
+    paramters.
+    """
     url = request.args.get('url', '')
     size = request.args.get('size', '')
     crop = request.args.get('crop', '')
     rotate = request.args.get('rotate', '')
     transpose = request.args.get('transpose', '')
     blur = request.args.get('blur', '')
-    return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate, 'transpose': transpose, 'blur': blur})
+    scale = request.args.get('scale', '')
+    return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate,
+                   'transpose': transpose, 'blur': blur, 'scale': scale})
 
 if __name__ == '__main__':
-    app.debug = False
-    app.run(host='0.0.0.0', port=8000)
+    app.debug = True
+    app.run(host='127.0.0.1', port=5280)
