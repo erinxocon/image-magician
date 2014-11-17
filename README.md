@@ -18,6 +18,8 @@ Image Magician is a utility for content manager that allows for easy image manip
 
 -[`/images?transpose=action1,action2,action3,...`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&transpose=90,left_right) transposes image
 
+```Possible values for actions are 90, 180, 270, left_right, top_bottom```
+
 -[`/images?rotate=angle`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&rotate=45) rotates the image
 
 -[`/images?blur=radius`](http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&blur=4) Guaisian Blur
@@ -39,4 +41,4 @@ http://imagemagician.mikexweb.com/images/?url=http://i.imgur.com/1GuBy9L.jpg&tra
 ```This will transpose the image from http://i.imgur.com/1GuBy9L.jpg and transpose it 90 degrees counter clockwise, and then flip it across the Y axis.```
 
 ## Notes
-The order of operations is crop, resize, transpose, rotate, and then blur.  You can use any combination of paramters together to get the your intended effect.  You can also daisy chain transpose actions one after another by making them a comma seperated list and passing it through the query string.
+The order of operations is crop, resize, transpose, rotate, and then blur.  You can use any combination of paramters together to get your intended effect.  You can also daisy chain transpose actions one after another by making them a comma seperated list and passing it through the query string.  All angles are measured in degrees and positive is counter clockwise.
