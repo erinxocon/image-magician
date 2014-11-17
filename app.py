@@ -80,6 +80,7 @@ def renderImage():
     i.close()
     resp = make_response(open(image_temp.name).read())
     resp.headers['Content-Type'] = 'image/png'
+    resp.headers['Cache-Control'] = 'public, max-age=3600'
     return resp
 
 
