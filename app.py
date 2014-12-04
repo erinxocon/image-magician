@@ -10,29 +10,37 @@ import tempfile
 app = Flask(__name__)
 
 
+def semiflatten(multi):
+    """Convert a MutiDict into a regular dict. If there are more than one value
+    for a key, the result will have a list of values for the key. Otherwise it
+    will have the plain value."""
+    if multi:
+        result = multi.to_dict(flat=False)
+        for k, v in result.items():
+            if len(v) == 1:
+                result[k] = v[0]
+        return result
+    else:
+        return multi
+
+
 def renderImage():
     """
     This function looks at the url arguments from the request object and uses
     them as paramters to PIL.  It also creates the response object and sets
     the the correct http headers for the response.
     """
-    url = request.args.get('url', '')
-    size = request.args.get('size', '')
-    crop = request.args.get('crop', '')
-    rotate = request.args.get('rotate', '')
-    transpose = request.args.get('transpose', '')
-    blur = request.args.get('blur', '')
-    scale = request.args.get('scale', '')
-    r = requests.get(url)
+    args = semiflatten(request.args)
+    r = requests.get(args['url'])
     image_temp = tempfile.NamedTemporaryFile(mode='w+b')
     i = Image.open(BytesIO(r.content))
 
-    if crop:
-        rectCrop = map(int, crop.split(','))
+    if args.get('crop'):
+        rectCrop = map(int, args.get('crop').split(','))
         i = i.crop(tuple(rectCrop))
 
-    if scale:
-        scaleVars = map(str, scale.split(','))
+    if args.get('scale'):
+        scaleVars = map(str, args.get('scale').split(','))
         orig_width = i.size[0]
         orig_height = i.size[1]
         if scaleVars[0] == '%':
@@ -51,12 +59,12 @@ def renderImage():
             scaleSize = tuple([new_width, new_Height])
         i = i.resize(scaleSize)
 
-    if size:
-        size = tuple(map(int, size.split(',')))
+    if args.get('size'):
+        size = tuple(map(int, args.get('size').split(',')))
         i = i.resize(size)
 
-    if transpose:
-        transposeList = map(str, transpose.split(','))
+    if args.get('transpose'):
+        transposeList = map(str, args.get('transpose').split(','))
         for x in xrange(0, len(transposeList)):
             if transposeList[x] == '90':
                 action = Image.ROTATE_90
@@ -75,15 +83,16 @@ def renderImage():
 
             i = i.transpose(action)
 
-    if rotate:
-        i = i.rotate(int(rotate))
+    if args.get('rotate'):
+        i = i.rotate(int(args.get('rotate')))
 
-    if blur:
-        i = i.filter(ImageFilter.GaussianBlur(radius=int(blur)))
+    if args.get('blur'):
+        i = i.filter(ImageFilter.GaussianBlur(radius=int(args.get('blur'))))
 
     i.save(image_temp, format='png')
     i.close()
-    resp = make_response(open(image_temp.name).read())
+    image_temp.seek(0)
+    resp = make_response(image_temp.read())
     resp.headers['Content-Type'] = 'image/png'
     resp.headers['Cache-Control'] = 'public, max-age=3600'
     return resp
@@ -95,21 +104,14 @@ def images_route():
     return renderImage()
 
 
-@app.route('/images/args/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def get_args():
     """
     This function generates a json object containig information about the url
     paramters.
     """
-    url = request.args.get('url', '')
-    size = request.args.get('size', '')
-    crop = request.args.get('crop', '')
-    rotate = request.args.get('rotate', '')
-    transpose = request.args.get('transpose', '')
-    blur = request.args.get('blur', '')
-    scale = request.args.get('scale', '')
-    return jsonify({'url': url, 'size': size, 'crop': crop, 'rotate': rotate,
-                   'transpose': transpose, 'blur': blur, 'scale': scale})
+    args = semiflatten(request.args)
+    return jsonify(args)
 
 if __name__ == '__main__':
     app.debug = False
