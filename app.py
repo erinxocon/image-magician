@@ -91,7 +91,8 @@ def renderImage():
 
     i.save(image_temp, format='png')
     i.close()
-    resp = make_response(open(image_temp.name).read())
+    image_temp.seek(0)
+    resp = make_response(image_temp.read())
     resp.headers['Content-Type'] = 'image/png'
     resp.headers['Cache-Control'] = 'public, max-age=3600'
     return resp
@@ -113,5 +114,5 @@ def get_args():
     return jsonify(args)
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='127.0.0.1', port=5280)
+    app.debug = False
+    app.run(host='0.0.0.0', port=5280)
